@@ -4,7 +4,8 @@ import click
 
 from matchy.matching_functions import match
 
-MAX_DEVICES = 30
+
+MAX_DEVICES = 26
 MAX_M = 30
 
 
