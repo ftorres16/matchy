@@ -39,6 +39,7 @@ def match(n, m):
         random_matrix = random_matrix.reshape(L, L)
 
         if get_error(random_matrix) < error:
+            error = get_error(random_matrix)
             match_matrix = np.copy(random_matrix)
 
         num_tries += 1
