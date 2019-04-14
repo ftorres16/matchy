@@ -2,6 +2,7 @@ import string
 
 import click
 
+from matchy.matching_functions import match
 
 MAX_DEVICES = 30
 MAX_M = 30
@@ -42,5 +43,4 @@ def cli(n, m):
             ]
         )
 
-    print(n)
-    print(m)
+    click.echo(match(n, m))
