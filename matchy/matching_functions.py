@@ -38,8 +38,10 @@ def match(n, m):
         np.random.shuffle(random_matrix)
         random_matrix = random_matrix.reshape(L, L)
 
-        if get_error(random_matrix) < error:
-            error = get_error(random_matrix)
+        new_error = get_error(random_matrix)
+
+        if new_error < error:
+            error = new_error
             match_matrix = np.copy(random_matrix)
 
         num_tries += 1
