@@ -60,8 +60,6 @@ def random_search(match_matrix):
     error = get_error(match_matrix)
     num_tries = 0
     random_matrix = np.copy(match_matrix)
-    print(match_matrix)
-    print(error)
 
     while error > TOL and num_tries < MAX_TRIES:
         random_matrix = random_matrix.ravel()
@@ -72,8 +70,6 @@ def random_search(match_matrix):
         if new_error < error:
             error = new_error
             match_matrix = np.copy(random_matrix)
-            print(match_matrix)
-            print(error)
 
         num_tries += 1
 
@@ -123,9 +119,33 @@ def simple_hill_climbing(match_matrix):
                     # undo the vertical swap
                     match_matrix[(y, y + 1), (x, x)] = match_matrix[(y + 1, y), (x, x)]
 
+                if x != cols - 1 and y != rows - 1:
+                    # diagonal swap
+                    match_matrix[(y, y + 1), (x, x + 1)] = match_matrix[(y + 1, y), (x + 1, x)]
+
+                    new_error = get_error(match_matrix)
+                    if new_error < error:
+                        error = new_error
+                        break_flag = True
+                        break
+
+                    # diagonal swap
+                    match_matrix[(y, y + 1), (x, x + 1)] = match_matrix[(y + 1, y), (x + 1, x)]
+
+                if x != 0 and y != rows - 1:
+                    # diagonal swap
+                    match_matrix[(y, y + 1), (x, x - 1)] = match_matrix[(y + 1, y), (x - 1, x)]
+
+                    new_error = get_error(match_matrix)
+                    if new_error < error:
+                        error = new_error
+                        break_flag = True
+                        break
+
+                    # diagonal swap
+                    match_matrix[(y, y + 1), (x, x - 1)] = match_matrix[(y + 1, y), (x - 1, x)]
+
             if break_flag:
-                print(match_matrix)
-                print(error)
                 break
         else:
             break
