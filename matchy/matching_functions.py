@@ -121,7 +121,9 @@ def simple_hill_climbing(match_matrix):
 
                 if x != cols - 1 and y != rows - 1:
                     # diagonal swap
-                    match_matrix[(y, y + 1), (x, x + 1)] = match_matrix[(y + 1, y), (x + 1, x)]
+                    match_matrix[(y, y + 1), (x, x + 1)] = match_matrix[
+                        (y + 1, y), (x + 1, x)
+                    ]
 
                     new_error = get_error(match_matrix)
                     if new_error < error:
@@ -130,11 +132,15 @@ def simple_hill_climbing(match_matrix):
                         break
 
                     # diagonal swap
-                    match_matrix[(y, y + 1), (x, x + 1)] = match_matrix[(y + 1, y), (x + 1, x)]
+                    match_matrix[(y, y + 1), (x, x + 1)] = match_matrix[
+                        (y + 1, y), (x + 1, x)
+                    ]
 
                 if x != 0 and y != rows - 1:
                     # diagonal swap
-                    match_matrix[(y, y + 1), (x, x - 1)] = match_matrix[(y + 1, y), (x - 1, x)]
+                    match_matrix[(y, y + 1), (x, x - 1)] = match_matrix[
+                        (y + 1, y), (x - 1, x)
+                    ]
 
                     new_error = get_error(match_matrix)
                     if new_error < error:
@@ -143,7 +149,9 @@ def simple_hill_climbing(match_matrix):
                         break
 
                     # diagonal swap
-                    match_matrix[(y, y + 1), (x, x - 1)] = match_matrix[(y + 1, y), (x - 1, x)]
+                    match_matrix[(y, y + 1), (x, x - 1)] = match_matrix[
+                        (y + 1, y), (x - 1, x)
+                    ]
 
             if break_flag:
                 break
