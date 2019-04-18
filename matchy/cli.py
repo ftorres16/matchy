@@ -2,7 +2,7 @@ import string
 
 import click
 
-from matchy.matching_functions import match
+from matchy.matching_functions import match, METHODS
 
 
 MAX_DEVICES = 26
@@ -22,7 +22,13 @@ MAX_M = 30
     multiple=True,
     help="Multiplicity of each device.",
 )
-def cli(n, m):
+@click.option(
+    "--method",
+    help="Method to find the optimal matrix.",
+    type=click.Choice(METHODS.keys()),
+    default="random",
+)
+def cli(n, m, method):
     """
     Matching for IC devices.
 
@@ -44,4 +50,4 @@ def cli(n, m):
             ]
         )
 
-    click.echo(match(n, m))
+    click.echo(match(n, m, method))
