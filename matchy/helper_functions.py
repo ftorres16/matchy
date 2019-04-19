@@ -15,7 +15,7 @@ def get_centroids(mat, names=None, dummy_name="?"):
     `dummy_name` lets you ignore a specific device.
     """
     if names is None:
-        names = get_device_names(mat, dummy_name)
+        names = get_device_names(mat, dummy_name=dummy_name)
 
     centroids = np.array(
         [np.mean(np.where(mat == name), axis=1)[::-1] for name in names]

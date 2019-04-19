@@ -3,7 +3,9 @@ import string
 
 import numpy as np
 
-from matching_algorithms import random_search, hill_climbing
+from matchy.matching_algorithms.random_search import random_search
+from matchy.matching_algorithms.hill_climbing import hill_climbing
+
 
 MAX_TRIES = 100000
 TOL = 1e-6
@@ -16,8 +18,12 @@ def match(n, m, method="random"):
     Returns a matrix with the best possible matching for N devices,
     where there multiplicities are given by the elements in M.
     """
+    # get all possible names
+    names = [string.ascii_uppercase[i] for i in range(n)]
     # get a list where each member is a piece of each device
-    flattened_names = [string.ascii_uppercase[i] for i in range(n) for _ in range(m[i])]
+    flattened_names = [
+        name for index, name in enumerate(names) for _ in range(m[index])
+    ]
 
     # get the lenght of the square where the devices will be laid
     L = math.ceil(math.sqrt(len(flattened_names)))
@@ -32,6 +38,6 @@ def match(n, m, method="random"):
     np.random.shuffle(match_matrix)
     match_matrix = match_matrix.reshape(L, L)
 
-    match_matrix = METHODS[method](match_matrix)
+    match_matrix = METHODS[method](match_matrix, names=names)
 
     return match_matrix
