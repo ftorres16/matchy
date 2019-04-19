@@ -3,7 +3,7 @@ import string
 
 import numpy as np
 
-from aux_functions import get_centroids, get_error
+from helper_functions import get_centroids, get_error
 
 MAX_TRIES = 100000
 TOL = 1e-6
