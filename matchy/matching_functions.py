@@ -24,10 +24,9 @@ def match(n, m, method="random"):
     n_spares = L ** 2 - len(flattened_names)
     flattened_names += ["?"] * n_spares
 
-    match_matrix = np.array(flattened_names).reshape(L, L)
+    match_matrix = np.array(flattened_names)
 
     # introduce some randomness to make it faster
-    match_matrix = match_matrix.ravel()
     np.random.shuffle(match_matrix)
     match_matrix = match_matrix.reshape(L, L)
 
