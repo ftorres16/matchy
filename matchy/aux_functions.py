@@ -25,6 +25,9 @@ def get_centroids(mat, names=None, dummy_name="?"):
     offset = (np.array(mat.shape[::-1]) - 1) / 2
     centroids -= offset
 
+    # Flip y axis to be more intuitive
+    centroids[:, 1] *= -1
+
     return centroids
 
 
