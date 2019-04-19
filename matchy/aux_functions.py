@@ -17,10 +17,9 @@ def get_centroids(mat, names=None, dummy_name="?"):
     if names is None:
         names = get_device_names(mat, dummy_name)
 
-    centroids = np.zeros((names.shape[0], 2))
-
-    for index, name in enumerate(names):
-        centroids[index] = np.mean(np.where(mat == name), axis=1)[::-1]
+    centroids = np.array(
+        [np.mean(np.where(mat == name), axis=1)[::-1] for name in names]
+    )
 
     # Re-center the centroids so the origin is at the center of `mat` and not at its corner.
     offset = (np.array(mat.shape[::-1]) - 1) / 2
