@@ -21,9 +21,13 @@ def get_centroids(mat, names=None, dummy_name="?"):
 
     for index, name in enumerate(names):
         row_vals, col_vals = np.where(mat == name)
-        center_y = np.mean(row_vals) - (mat.shape[0] - 1) / 2
-        center_x = np.mean(row_vals) - (mat.shape[1] - 1) / 2
+        center_y = np.mean(row_vals)
+        center_x = np.mean(row_vals)
         centroids[index] = center_x, center_y
+
+    # Re-center the centroids so the origin is at the center of `mat` and not at its corner.
+    offset = (np.array(mat.shape[::-1]) - 1) / 2
+    centroids -= offset
 
     return centroids
 
