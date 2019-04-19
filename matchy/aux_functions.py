@@ -17,7 +17,7 @@ def get_centroids(mat, names=None, dummy_name="?"):
     if names is None:
         names = get_device_names(mat, dummy_name)
 
-    centroids = np.zeros((names.shape[0][0], 2))
+    centroids = np.zeros((names.shape[0], 2))
 
     for index, name in enumerate(names):
         centroids[index] = np.mean(np.where(mat == name), axis=1)[::-1]
