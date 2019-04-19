@@ -3,6 +3,8 @@ import string
 
 import numpy as np
 
+from aux_functions import get_centroids, get_error
+
 MAX_TRIES = 100000
 TOL = 1e-6
 
@@ -32,25 +34,6 @@ def match(n, m, method="random"):
     match_matrix = METHODS[method](match_matrix)
 
     return match_matrix
-
-
-def get_error(mat, dummy_name="?"):
-    """
-    Returns the root of the square sum of the centroids for all the elements
-    in `mat` while ignoring the dummies.
-    """
-    names = np.unique(mat)
-    names = names[names != dummy_name]
-
-    centroids = np.zeros((len(names), 2))
-
-    for index, name in enumerate(names):
-        row_vals, col_vals = np.where(mat == name)
-        center_y = np.mean(row_vals) - (mat.shape[0] - 1) / 2
-        center_x = np.mean(col_vals) - (mat.shape[1] - 1) / 2
-        centroids[index] = center_x, center_y
-
-    return np.sqrt(np.sum(centroids ** 2))
 
 
 def random_search(match_matrix):
