@@ -3,10 +3,12 @@ import string
 
 import numpy as np
 
-from helper_functions import get_centroids, get_error
+from matching_algorithms import random_search, hill_climbing
 
 MAX_TRIES = 100000
 TOL = 1e-6
+
+METHODS = {"random": random_search, "hill_climbing": hill_climbing}
 
 
 def match(n, m, method="random"):
@@ -33,114 +35,3 @@ def match(n, m, method="random"):
     match_matrix = METHODS[method](match_matrix)
 
     return match_matrix
-
-
-def random_search(match_matrix):
-    """
-    Try to optimize the matrix by performing a random search.
-    """
-    error = get_error(match_matrix)
-    num_tries = 0
-    random_matrix = np.copy(match_matrix)
-
-    while error > TOL and num_tries < MAX_TRIES:
-        random_matrix = random_matrix.ravel()
-        np.random.shuffle(random_matrix)
-        random_matrix = random_matrix.reshape(match_matrix.shape)
-
-        new_error = get_error(random_matrix)
-        if new_error < error:
-            error = new_error
-            match_matrix = np.copy(random_matrix)
-
-        num_tries += 1
-
-    return match_matrix
-
-
-def simple_hill_climbing(match_matrix):
-    """
-    Try to optimize the matrix by performing simple hill climbing.
-    This means, moving devices one place at a time.
-    """
-    error = get_error(match_matrix)
-
-    rows, cols = match_matrix.shape
-
-    for _ in range(MAX_TRIES):
-        if error < TOL:
-            break
-
-        break_flag = False
-
-        for x in range(cols):
-            for y in range(rows):
-                if x != cols - 1:
-                    # horizontal swap
-                    match_matrix[(y, y), (x, x + 1)] = match_matrix[(y, y), (x + 1, x)]
-
-                    new_error = get_error(match_matrix)
-                    if new_error < error:
-                        error = new_error
-                        break_flag = True
-                        break
-
-                    # undo the horizontal swap
-                    match_matrix[(y, y), (x, x + 1)] = match_matrix[(y, y), (x + 1, x)]
-
-                if y != rows - 1:
-                    # vertical swap
-                    match_matrix[(y, y + 1), (x, x)] = match_matrix[(y + 1, y), (x, x)]
-
-                    new_error = get_error(match_matrix)
-                    if new_error < error:
-                        error = new_error
-                        break_flag = True
-                        break
-
-                    # undo the vertical swap
-                    match_matrix[(y, y + 1), (x, x)] = match_matrix[(y + 1, y), (x, x)]
-
-                if x != cols - 1 and y != rows - 1:
-                    # diagonal swap
-                    match_matrix[(y, y + 1), (x, x + 1)] = match_matrix[
-                        (y + 1, y), (x + 1, x)
-                    ]
-
-                    new_error = get_error(match_matrix)
-                    if new_error < error:
-                        error = new_error
-                        break_flag = True
-                        break
-
-                    # diagonal swap
-                    match_matrix[(y, y + 1), (x, x + 1)] = match_matrix[
-                        (y + 1, y), (x + 1, x)
-                    ]
-
-                if x != 0 and y != rows - 1:
-                    # diagonal swap
-                    match_matrix[(y, y + 1), (x, x - 1)] = match_matrix[
-                        (y + 1, y), (x - 1, x)
-                    ]
-
-                    new_error = get_error(match_matrix)
-                    if new_error < error:
-                        error = new_error
-                        break_flag = True
-                        break
-
-                    # diagonal swap
-                    match_matrix[(y, y + 1), (x, x - 1)] = match_matrix[
-                        (y + 1, y), (x - 1, x)
-                    ]
-
-            if break_flag:
-                break
-        else:
-            break
-
-    return match_matrix
-
-
-METHODS = {"random": random_search, "hill_climbing": simple_hill_climbing}
