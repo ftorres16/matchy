@@ -66,13 +66,13 @@ def cli(n, m, method, output):
     # pretty print the report as a table
     col_width = max([len(header) for header in matching_report.keys()])
     num_cols = len(matching_report.keys())
-    click.echo("┌" + "─┬─".join(["─" * col_width for _ in range(num_cols)]) + "┐")
+    click.echo("┌─" + "─┬─".join(["─" * col_width for _ in range(num_cols)]) + "─┐")
     click.echo(
-        "│"
+        "│ "
         + " │ ".join([f"{header:>{col_width}}" for header in matching_report.keys()])
-        + "│"
+        + " │"
     )
-    click.echo("├" + "─┼─".join(["─" * col_width for _ in range(num_cols)]) + "┤")
+    click.echo("├─" + "─┼─".join(["─" * col_width for _ in range(num_cols)]) + "─┤")
 
     for index, name in enumerate(matching_report["names"]):
         centroid_x = f"{matching_report['centroid_x'][index]: .3}"
@@ -81,21 +81,21 @@ def cli(n, m, method, output):
 
         if index != 0:
             click.echo(
-                "├" + "┈┼┈".join(["┈" * col_width for _ in range(num_cols)]) + "┤"
+                "├┈" + "┈┼┈".join(["┈" * col_width for _ in range(num_cols)]) + "┈┤"
             )
 
         click.echo(
-            "│"
+            "│ "
             + " │ ".join(
                 [
                     f"{value:>{col_width}}"
                     for value in (name, centroid_x, centroid_y, error)
                 ]
             )
-            + "│"
+            + " │"
         )
 
-    click.echo("└" + "─┴─".join(["─" * col_width for _ in range(num_cols)]) + "┘")
+    click.echo("└─" + "─┴─".join(["─" * col_width for _ in range(num_cols)]) + "─┘")
     click.echo("\n")
 
     if output is None:
