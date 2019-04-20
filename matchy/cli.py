@@ -73,6 +73,11 @@ def cli(n, m, method):
         centroid_y = f"{matching_report['centroid_y'][index]: .3}"
         error = f"{matching_report['error'][index]: .3}"
 
+        if index != 0:
+            click.echo(
+                "├" + "┈┼┈".join(["┈" * col_width for _ in range(num_cols)]) + "┤"
+            )
+
         click.echo(
             "│"
             + " │ ".join(
