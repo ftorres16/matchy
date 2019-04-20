@@ -1,6 +1,7 @@
 import string
 
 import click
+import numpy as np
 
 from matchy.matching_functions import match, report, METHODS
 
@@ -28,7 +29,8 @@ MAX_M = 30
     type=click.Choice(METHODS.keys()),
     default="random",
 )
-def cli(n, m, method):
+@click.option("--output", help="File to save the resulting matrix.", type=click.Path())
+def cli(n, m, method, output):
     """
     Matching for IC devices.
 
@@ -92,3 +94,12 @@ def cli(n, m, method):
 
     click.echo("└" + "─┴─".join(["─" * col_width for _ in range(num_cols)]) + "┘")
     click.echo("\n")
+
+    if output is None:
+        if click.confirm("Would you like to save the matrix to a .csv file?"):
+            output = click.prompt(
+                "Enter path to file to save the matrix", type=click.Path()
+            )
+
+    if output is not None:
+        np.savetxt(output, matched_matrix, fmt="%s")
