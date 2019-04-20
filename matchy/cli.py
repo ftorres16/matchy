@@ -55,7 +55,10 @@ def cli(n, m, method, output):
     matched_matrix = match(n, m, method)
 
     click.echo("\n")
-    click.echo(matched_matrix)
+    click.echo("┌" + "─" * (2 * matched_matrix.shape[1] + 1) + "┐")
+    for row in matched_matrix:
+        click.echo("│ " + " ".join([dev for dev in row]) + " │")
+    click.echo("└" + "─" * (2 * matched_matrix.shape[1] + 1) + "┘")
     click.echo("\n")
 
     matching_report = report(matched_matrix)
