@@ -15,7 +15,6 @@ MAX_M = 30
     "-n",
     type=click.IntRange(1, MAX_DEVICES),
     help="Number of different devices to be matched.",
-    prompt="Number of devices",
 )
 @click.option(
     "-m",
@@ -29,8 +28,11 @@ MAX_M = 30
     type=click.Choice(METHODS.keys()),
     default="random",
 )
+@click.option(
+    "--initial", help="File to load the initial matrix guess.", type=click.Path()
+)
 @click.option("--output", help="File to save the resulting matrix.", type=click.Path())
-def cli(n, m, method, output):
+def cli(n, m, method, initial, output):
     """
     Matching for IC devices.
 
@@ -40,19 +42,27 @@ def cli(n, m, method, output):
     This will match 3 devices, the first of which has m=2, the second has m=3, the third has m=1.
     """
 
-    if len(m) != n:
-        # Multiplicities mismatch N. Enter them manually.
-        m = tuple(
-            [
-                click.prompt(
-                    f"Multiplicity for device {string.ascii_uppercase[i]}",
-                    type=click.IntRange(1, MAX_M),
-                )
-                for i in range(n)
-            ]
-        )
+    if initial:
+        initial_matrix = np.genfromtxt(initial, dtype="<U1")
+        matched_matrix = match(method=method, initial_guess=initial_matrix)
+    else:
+        if not n:
+            n = click.prompt(
+                "Number of devices", type=click.IntRange(1, MAX_DEVICES)
+            )
+        if len(m) != n:
+            # Multiplicities mismatch N. Enter them manually.
+            m = tuple(
+                [
+                    click.prompt(
+                        f"Multiplicity for device {string.ascii_uppercase[i]}",
+                        type=click.IntRange(1, MAX_M),
+                    )
+                    for i in range(n)
+                ]
+            )
 
-    matched_matrix = match(n, m, method)
+        matched_matrix = match(n, m, method)
 
     click.echo("\n")
     click.echo("┌" + "─" * (2 * matched_matrix.shape[1] + 1) + "┐")
