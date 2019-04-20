@@ -24,71 +24,35 @@ def hill_climbing(match_matrix, names=None, dummy_name="?"):
             for y in range(rows):
                 if x != cols - 1:
                     # horizontal swap
-                    match_matrix[(y, y), (x, x + 1)] = match_matrix[(y, y), (x + 1, x)]
-
-                    new_error = get_error(
-                        match_matrix, names=names, dummy_name=dummy_name
+                    match_matrix, error, break_flag = swap_components(
+                        match_matrix, (x, y), (1, 0), names, dummy_name, error
                     )
-                    if new_error < error:
-                        error = new_error
-                        break_flag = True
+                    if break_flag:
                         break
-
-                    # undo the horizontal swap
-                    match_matrix[(y, y), (x, x + 1)] = match_matrix[(y, y), (x + 1, x)]
 
                 if y != rows - 1:
                     # vertical swap
-                    match_matrix[(y, y + 1), (x, x)] = match_matrix[(y + 1, y), (x, x)]
-
-                    new_error = get_error(
-                        match_matrix, names=names, dummy_name=dummy_name
+                    match_matrix, error, break_flag = swap_components(
+                        match_matrix, (x, y), (0, 1), names, dummy_name, error
                     )
-                    if new_error < error:
-                        error = new_error
-                        break_flag = True
+                    if break_flag:
                         break
-
-                    # undo the vertical swap
-                    match_matrix[(y, y + 1), (x, x)] = match_matrix[(y + 1, y), (x, x)]
 
                 if x != cols - 1 and y != rows - 1:
                     # diagonal swap
-                    match_matrix[(y, y + 1), (x, x + 1)] = match_matrix[
-                        (y + 1, y), (x + 1, x)
-                    ]
-
-                    new_error = get_error(
-                        match_matrix, names=names, dummy_name=dummy_name
+                    match_matrix, error, break_flag = swap_components(
+                        match_matrix, (x, y), (1, 1), names, dummy_name, error
                     )
-                    if new_error < error:
-                        error = new_error
-                        break_flag = True
+                    if break_flag:
                         break
-
-                    # diagonal swap
-                    match_matrix[(y, y + 1), (x, x + 1)] = match_matrix[
-                        (y + 1, y), (x + 1, x)
-                    ]
 
                 if x != 0 and y != rows - 1:
                     # diagonal swap
-                    match_matrix[(y, y + 1), (x, x - 1)] = match_matrix[
-                        (y + 1, y), (x - 1, x)
-                    ]
-
-                    new_error = get_error(
-                        match_matrix, names=names, dummy_name=dummy_name
+                    match_matrix, error, break_flag = swap_components(
+                        match_matrix, (x, y), (-1, 1), names, dummy_name, error
                     )
-                    if new_error < error:
-                        error = new_error
-                        break_flag = True
+                    if break_flag:
                         break
-
-                    # diagonal swap
-                    match_matrix[(y, y + 1), (x, x - 1)] = match_matrix[
-                        (y + 1, y), (x - 1, x)
-                    ]
 
             if break_flag:
                 break
@@ -96,3 +60,22 @@ def hill_climbing(match_matrix, names=None, dummy_name="?"):
             break
 
     return match_matrix
+
+
+def swap_components(mat, swap_point, swap_dir, names, dummy_name, error):
+    x = swap_point[0]
+    y = swap_point[1]
+    swap_x = swap_dir[0]
+    swap_y = swap_dir[1]
+
+    mat[(y, y + swap_y), (x, x + swap_x)] = mat[(y + swap_y, y), (x + swap_x, x)]
+
+    new_error = get_error(mat, names=names, dummy_name=dummy_name)
+
+    if new_error < error:
+        error = new_error
+        return mat, error, True
+
+    # undo the swap
+    mat[(y, y + swap_y), (x, x + swap_x)] = mat[(y + swap_y, y), (x + swap_x, x)]
+    return mat, error, False
