@@ -2,7 +2,7 @@ import string
 
 import click
 
-from matchy.matching_functions import match, METHODS
+from matchy.matching_functions import match, report, METHODS
 
 
 MAX_DEVICES = 26
@@ -50,4 +50,45 @@ def cli(n, m, method):
             ]
         )
 
-    click.echo(match(n, m, method))
+    matched_matrix = match(n, m, method)
+
+    click.echo("\n")
+    click.echo(matched_matrix)
+    click.echo("\n")
+
+    matching_report = report(matched_matrix)
+
+    # pretty print the report as a table
+    col_width = max([len(header) for header in matching_report.keys()])
+    num_cols = len(matching_report.keys())
+    click.echo("┌" + "─┬─".join(["─" * col_width for _ in range(num_cols)]) + "┐")
+    click.echo(
+        "│"
+        + " │ ".join([f"{header:>{col_width}}" for header in matching_report.keys()])
+        + "│"
+    )
+    click.echo("├" + "─┼─".join(["─" * col_width for _ in range(num_cols)]) + "┤")
+
+    for index, name in enumerate(matching_report["names"]):
+        centroid_x = f"{matching_report['centroid_x'][index]: .3}"
+        centroid_y = f"{matching_report['centroid_y'][index]: .3}"
+        error = f"{matching_report['error'][index]: .3}"
+
+        if index != 0:
+            click.echo(
+                "├" + "┈┼┈".join(["┈" * col_width for _ in range(num_cols)]) + "┤"
+            )
+
+        click.echo(
+            "│"
+            + " │ ".join(
+                [
+                    f"{value:>{col_width}}"
+                    for value in (name, centroid_x, centroid_y, error)
+                ]
+            )
+            + "│"
+        )
+
+    click.echo("└" + "─┴─".join(["─" * col_width for _ in range(num_cols)]) + "┘")
+    click.echo("\n")

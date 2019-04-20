@@ -5,6 +5,7 @@ import numpy as np
 
 from matchy.matching_algorithms.random_search import random_search
 from matchy.matching_algorithms.hill_climbing import hill_climbing
+from matchy.helper_functions import get_centroids, get_device_names
 
 
 MAX_TRIES = 100000
@@ -41,3 +42,16 @@ def match(n, m, method="random"):
     match_matrix = METHODS[method](match_matrix, names=names)
 
     return match_matrix
+
+
+def report(mat):
+    names = get_device_names(mat)
+    centroids = get_centroids(mat, names=names)
+    errors = np.sqrt(np.sum(np.square(centroids), axis=1))
+
+    return {
+        "names": names,
+        "centroid_x": centroids[:, 0],
+        "centroid_y": centroids[:, 1],
+        "error": errors
+    }
