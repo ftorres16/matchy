@@ -50,8 +50,9 @@ def cli(n, m, method):
             ]
         )
 
-    click.echo("\n")
     matched_matrix = match(n, m, method)
+
+    click.echo("\n")
     click.echo(matched_matrix)
     click.echo("\n")
 
