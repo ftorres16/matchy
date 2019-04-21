@@ -9,7 +9,7 @@ class RandomHill(BaseMatchingClass):
     Try to optimize by using hill climbing on N randomly chosen matrixes.
     """
 
-    def __init__(self, mat, num_matrixes=10, *args, **kwargs):
+    def __init__(self, mat, num_matrixes=100, *args, **kwargs):
         super().__init__(mat, *args, **kwargs)
 
         random_matrixes = []
