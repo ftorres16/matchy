@@ -8,7 +8,7 @@ MAX_TRIES = 100_000
 def hill_climbing(match_matrix, names=None, dummy_name="?"):
     """
     Try to optimize the matrix by performing simple hill climbing.
-    This means, moving devices one place at a time.
+    This means, swapping devices one place at a time.
     """
     error = get_error(match_matrix, names=names, dummy_name=dummy_name)
 
@@ -22,73 +22,26 @@ def hill_climbing(match_matrix, names=None, dummy_name="?"):
 
         for x in range(cols):
             for y in range(rows):
+                # get all the directions in which the target component will be swapped
+                swap_dirs = []
                 if x != cols - 1:
-                    # horizontal swap
-                    match_matrix[(y, y), (x, x + 1)] = match_matrix[(y, y), (x + 1, x)]
-
-                    new_error = get_error(
-                        match_matrix, names=names, dummy_name=dummy_name
-                    )
-                    if new_error < error:
-                        error = new_error
-                        break_flag = True
-                        break
-
-                    # undo the horizontal swap
-                    match_matrix[(y, y), (x, x + 1)] = match_matrix[(y, y), (x + 1, x)]
-
+                    swap_dirs.append((1, 0))
                 if y != rows - 1:
-                    # vertical swap
-                    match_matrix[(y, y + 1), (x, x)] = match_matrix[(y + 1, y), (x, x)]
-
-                    new_error = get_error(
-                        match_matrix, names=names, dummy_name=dummy_name
-                    )
-                    if new_error < error:
-                        error = new_error
-                        break_flag = True
-                        break
-
-                    # undo the vertical swap
-                    match_matrix[(y, y + 1), (x, x)] = match_matrix[(y + 1, y), (x, x)]
-
+                    swap_dirs.append((0, 1))
                 if x != cols - 1 and y != rows - 1:
-                    # diagonal swap
-                    match_matrix[(y, y + 1), (x, x + 1)] = match_matrix[
-                        (y + 1, y), (x + 1, x)
-                    ]
-
-                    new_error = get_error(
-                        match_matrix, names=names, dummy_name=dummy_name
-                    )
-                    if new_error < error:
-                        error = new_error
-                        break_flag = True
-                        break
-
-                    # diagonal swap
-                    match_matrix[(y, y + 1), (x, x + 1)] = match_matrix[
-                        (y + 1, y), (x + 1, x)
-                    ]
-
+                    swap_dirs.append((1, 1))
                 if x != 0 and y != rows - 1:
-                    # diagonal swap
-                    match_matrix[(y, y + 1), (x, x - 1)] = match_matrix[
-                        (y + 1, y), (x - 1, x)
-                    ]
+                    swap_dirs.append((-1, 1))
 
-                    new_error = get_error(
-                        match_matrix, names=names, dummy_name=dummy_name
+                for swap_dir in swap_dirs:
+                    match_matrix, error, break_flag = swap_components(
+                        match_matrix, (x, y), swap_dir, names, dummy_name, error
                     )
-                    if new_error < error:
-                        error = new_error
-                        break_flag = True
+                    if break_flag:
                         break
 
-                    # diagonal swap
-                    match_matrix[(y, y + 1), (x, x - 1)] = match_matrix[
-                        (y + 1, y), (x - 1, x)
-                    ]
+                if break_flag:
+                    break
 
             if break_flag:
                 break
@@ -96,3 +49,40 @@ def hill_climbing(match_matrix, names=None, dummy_name="?"):
             break
 
     return match_matrix
+
+
+def swap_components(mat, swap_point, swap_dir, names, dummy_name, error):
+    """
+    Given a matrix `mat`, this function will check if the error improves or decreases by
+    swapping element `swap point` in (x, y) format with the one that's offset one `swap_dir`.
+
+    This function will return the matrix with the swapped components if the error diminishes
+    and the old matrix if it doesn't.
+
+    For example, if `mat` is [['A', 'B'],
+                              ['A', 'B']]
+
+        - `swap_point` (0,0) and `swap_dir` (0,1) returns
+            [['B', 'A'],
+             ['A', 'B']]
+
+        - `swap_point` (0,0) and `swap_dir` (1,1) returns
+            [['A', 'B'],
+             ['A', 'B']]
+    """
+    x = swap_point[0]
+    y = swap_point[1]
+    swap_x = swap_dir[0]
+    swap_y = swap_dir[1]
+
+    mat[(y, y + swap_y), (x, x + swap_x)] = mat[(y + swap_y, y), (x + swap_x, x)]
+
+    new_error = get_error(mat, names=names, dummy_name=dummy_name)
+
+    if new_error < error:
+        error = new_error
+        return mat, error, True
+
+    # undo the swap
+    mat[(y, y + swap_y), (x, x + swap_x)] = mat[(y + swap_y, y), (x + swap_x, x)]
+    return mat, error, False
