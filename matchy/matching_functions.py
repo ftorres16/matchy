@@ -5,10 +5,11 @@ import numpy as np
 
 from matchy.matching_algorithms.random_search import RandomSearch
 from matchy.matching_algorithms.hill_climbing import HillClimbing
+from matchy.matching_algorithms.random_hill import RandomHill
 from matchy.helper_functions import get_centroids, get_device_names
 
 
-METHODS = {"random": RandomSearch, "hill_climbing": HillClimbing}
+METHODS = {"random": RandomSearch, "hill_climbing": HillClimbing, "random_hill": RandomHill}
 
 
 def match(n=None, m=None, method="random", initial_guess=None):
