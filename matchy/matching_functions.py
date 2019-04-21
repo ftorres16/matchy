@@ -55,6 +55,11 @@ def report(mat):
     centroids = get_centroids(mat, names=names)
     errors = np.sqrt(np.sum(np.square(centroids), axis=1))
 
+    # add total error to the report
+    names = np.append(names, 'total')
+    centroids = np.append(centroids, [[np.nan, np.nan]], axis=0)
+    errors = np.append(errors, np.sqrt(np.sum(np.square(errors))))
+
     return {
         "names": names,
         "centroid_x": centroids[:, 0],
