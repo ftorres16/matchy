@@ -26,7 +26,7 @@ MAX_M = 30
     "--method",
     help="Method to find the optimal matrix.",
     type=click.Choice(METHODS.keys()),
-    default="random",
+    default="random_hill",
 )
 @click.option(
     "--initial", help="File to load the initial matrix guess.", type=click.Path()
