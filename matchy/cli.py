@@ -64,6 +64,7 @@ def cli(n, m, method, initial, output):
 
         matched_matrix = match(n, m, method)
 
+    # pretty print the matrix in a box
     click.echo("\n")
     click.echo("┌" + "─" * (2 * matched_matrix.shape[1] + 1) + "┐")
     for row in matched_matrix:
