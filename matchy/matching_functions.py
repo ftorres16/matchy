@@ -3,15 +3,12 @@ import string
 
 import numpy as np
 
-from matchy.matching_algorithms.random_search import random_search
-from matchy.matching_algorithms.hill_climbing import hill_climbing
+from matchy.matching_algorithms.random_search import RandomSearch
+from matchy.matching_algorithms.hill_climbing import HillClimbing
 from matchy.helper_functions import get_centroids, get_device_names
 
 
-MAX_TRIES = 100000
-TOL = 1e-6
-
-METHODS = {"random": random_search, "hill_climbing": hill_climbing}
+METHODS = {"random": RandomSearch, "hill_climbing": HillClimbing}
 
 
 def match(n=None, m=None, method="random", initial_guess=None):
@@ -46,9 +43,10 @@ def match(n=None, m=None, method="random", initial_guess=None):
         np.random.shuffle(match_matrix)
         match_matrix = match_matrix.reshape(L, L)
 
-    match_matrix = METHODS[method](match_matrix, names=names)
+    matching_method = METHODS[method](match_matrix)
+    matching_method.run()
 
-    return match_matrix
+    return matching_method.mat
 
 
 def report(mat):
