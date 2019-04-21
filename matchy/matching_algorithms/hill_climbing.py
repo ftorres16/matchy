@@ -8,59 +8,43 @@ class HillClimbing(BaseMatchingClass):
     This means, swapping devices one place at a time.
     """
 
-    def optimize(self):
-
+    def _optimize(self):
         rows, cols = self.mat.shape
 
-        for _ in range(self.max_tries):
-            if self.error < self.tol:
-                break
+        for x in range(cols):
+            for y in range(rows):
+                # get all the directions in which the target component will be swapped
+                swap_dirs = []
+                if x != cols - 1:
+                    swap_dirs.append((1, 0))
+                if y != rows - 1:
+                    swap_dirs.append((0, 1))
+                if x != cols - 1 and y != rows - 1:
+                    swap_dirs.append((1, 1))
+                if x != 0 and y != rows - 1:
+                    swap_dirs.append((-1, 1))
 
-            break_flag = False
-
-            for x in range(cols):
-                for y in range(rows):
-                    # get all the directions in which the target component will be swapped
-                    swap_dirs = []
-                    if x != cols - 1:
-                        swap_dirs.append((1, 0))
-                    if y != rows - 1:
-                        swap_dirs.append((0, 1))
-                    if x != cols - 1 and y != rows - 1:
-                        swap_dirs.append((1, 1))
-                    if x != 0 and y != rows - 1:
-                        swap_dirs.append((-1, 1))
-
-                    for swap_dir in swap_dirs:
-                        break_flag = self.swap_components((x, y), swap_dir)
-                        if break_flag:
-                            break
-
-                    if break_flag:
-                        break
-
-                if break_flag:
-                    break
-            else:
-                break
-        return
+                for swap_dir in swap_dirs:
+                    if self.swap_components((x, y), swap_dir):
+                        return False
+        return True
 
     def swap_components(self, swap_point, swap_dir):
         """
         Given a matrix `self.mat`, this function will check if the error improves or decreases by
         swapping element `swap point` in (x, y) format with the one that's offset one `swap_dir`.
 
-        This function will return the matrix with the swapped components if the error diminishes
-        and the old matrix if it doesn't.
+        This function will return `True` if the matrix with the swapped components if the error
+        diminishes and `False` if it doesn't.
 
         For example, if `self.mat` is [['A', 'B'],
-                                  ['A', 'B']]
+                                       ['A', 'B']]
 
-            - `swap_point` (0,0) and `swap_dir` (0,1) changes it to
+            - `swap_point` (0,0) and `swap_dir` (0,1) it returns `True` and `self.mat` will be
                 [['B', 'A'],
                  ['A', 'B']]
 
-            - `swap_point` (0,0) and `swap_dir` (1,1) has it remain the same
+            - `swap_point` (0,0) and `swap_dir` (1,1) it returns `False` and `self.mat` will be
                 [['A', 'B'],
                  ['A', 'B']]
         """

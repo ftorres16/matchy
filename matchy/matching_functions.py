@@ -8,9 +8,6 @@ from matchy.matching_algorithms.hill_climbing import HillClimbing
 from matchy.helper_functions import get_centroids, get_device_names
 
 
-MAX_TRIES = 100000
-TOL = 1e-6
-
 METHODS = {"random": RandomSearch, "hill_climbing": HillClimbing}
 
 
@@ -47,7 +44,7 @@ def match(n=None, m=None, method="random", initial_guess=None):
         match_matrix = match_matrix.reshape(L, L)
 
     matching_method = METHODS[method](match_matrix)
-    matching_method.optimize()
+    matching_method.run()
 
     return matching_method.mat
 

@@ -9,20 +9,18 @@ class RandomSearch(BaseMatchingClass):
     Try to optimize the matrix by performing a random search.
     """
 
-    def optimize(self):
-        random_matrix = np.copy(self.mat)
+    def __init__(self, mat, *args, **kwargs):
+        super().__init__(mat, *args, **kwargs)
+        self.random_matrix = np.copy(mat)
 
-        for _ in range(self.max_tries):
-            if self.error < self.tol:
-                break
+    def _optimize(self):
+        self.random_matrix = self.random_matrix.ravel()
+        np.random.shuffle(self.random_matrix)
+        self.random_matrix = self.random_matrix.reshape(self.mat.shape)
 
-            random_matrix = random_matrix.ravel()
-            np.random.shuffle(random_matrix)
-            random_matrix = random_matrix.reshape(self.mat.shape)
+        new_error = get_error(self.random_matrix, names=self.names, dummy_name=self.dummy_name)
+        if new_error < self.error:
+            self.error = new_error
+            self.mat = np.copy(self.random_matrix)
 
-            new_error = get_error(random_matrix, names=self.names, dummy_name=self.dummy_name)
-            if new_error < self.error:
-                self.error = new_error
-                self.mat = np.copy(random_matrix)
-
-        return
+        return False
