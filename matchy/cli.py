@@ -12,7 +12,11 @@ from matchy.matching_algorithms.random_hill import RandomHill
 
 MAX_DEVICES = 26
 MAX_M = 30
-METHODS = {"random": RandomSearch, "hill_climbing": HillClimbing, "random_hill": RandomHill}
+METHODS = {
+    "random": RandomSearch,
+    "hill_climbing": HillClimbing,
+    "random_hill": RandomHill,
+}
 
 
 @click.command()
@@ -80,6 +84,7 @@ def cli(n, m, method, initial, output):
 
     optimizer = METHODS[method](match_matrix)
 
+    # The actual optimization is performed here.
     click.echo()
     with click.progressbar(optimizer._iter(), length=optimizer.max_tries) as bar:
         for _ in bar:
@@ -89,10 +94,12 @@ def cli(n, m, method, initial, output):
 
     # pretty print the matrix in a box
     click.echo()
-    click.echo("┌" + "─" * (2 * matched_matrix.shape[1] + 1) + "┐")
+    box_top = "─" * (2 * matched_matrix.shape[1] + 1)
+    click.echo(f"┌{box_top}┐")
     for row in matched_matrix:
-        click.echo("│ " + " ".join([dev for dev in row]) + " │")
-    click.echo("└" + "─" * (2 * matched_matrix.shape[1] + 1) + "┘")
+        devices = " ".join(row)
+        click.echo(f"│ {devices} │")
+    click.echo(f"└{box_top}┘")
     click.echo()
 
     matching_report = get_report(matched_matrix)
@@ -100,34 +107,29 @@ def cli(n, m, method, initial, output):
     # pretty print the report as a table
     col_width = max([len(header) for header in matching_report.keys()])
     num_cols = len(matching_report.keys())
-    click.echo("┌─" + "─┬─".join(["─" * col_width for _ in range(num_cols)]) + "─┐")
-    click.echo(
-        "│ "
-        + " │ ".join([f"{header:>{col_width}}" for header in matching_report.keys()])
-        + " │"
+    box_top = "─┬─".join(["─" * col_width for _ in range(num_cols)])
+    headers = " │ ".join(
+        [f"{header:>{col_width}}" for header in matching_report.keys()]
     )
-    click.echo("├─" + "─┼─".join(["─" * col_width for _ in range(num_cols)]) + "─┤")
+    separator = "─┼─".join(["─" * col_width for _ in range(num_cols)])
+    row_separator = "┈┼┈".join(["┈" * col_width for _ in range(num_cols)])
+    box_bot = "─┴─".join(["─" * col_width for _ in range(num_cols)])
+    click.echo(f"┌─{box_top}─┐")
+    click.echo(f"│ {headers} │")
+    click.echo(f"├─{separator}─┤")
     for index, name in enumerate(matching_report["names"]):
         centroid_x = f"{matching_report['centroid_x'][index]: .3}"
         centroid_y = f"{matching_report['centroid_y'][index]: .3}"
         error = f"{matching_report['error'][index]: .3}"
 
-        if index != 0:
-            click.echo(
-                "├┈" + "┈┼┈".join(["┈" * col_width for _ in range(num_cols)]) + "┈┤"
-            )
+        if index > 0:
+            click.echo(f"├┈{row_separator}┈┤")
 
-        click.echo(
-            "│ "
-            + " │ ".join(
-                [
-                    f"{value:>{col_width}}"
-                    for value in (name, centroid_x, centroid_y, error)
-                ]
-            )
-            + " │"
+        row = " │ ".join(
+            [f"{value:>{col_width}}" for value in (name, centroid_x, centroid_y, error)]
         )
-    click.echo("└─" + "─┴─".join(["─" * col_width for _ in range(num_cols)]) + "─┘")
+        click.echo(f"│ {row} │")
+    click.echo(f"└─{box_bot}─┘")
     click.echo()
 
     if output is None:
