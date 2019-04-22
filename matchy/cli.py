@@ -44,7 +44,7 @@ def cli(n, m, method, initial, output):
 
     if initial:
         initial_matrix = np.genfromtxt(initial, dtype="<U1")
-        matched_matrix = match(method=method, initial_guess=initial_matrix)
+        optimizer = match(method=method, initial_guess=initial_matrix)
     else:
         if not n:
             n = click.prompt(
@@ -62,7 +62,14 @@ def cli(n, m, method, initial, output):
                 ]
             )
 
-        matched_matrix = match(n, m, method)
+        optimizer = match(n, m, method)
+
+    click.echo()
+    with click.progressbar(optimizer._iter(), length=optimizer.max_tries) as bar:
+        for _ in bar:
+            pass
+
+    matched_matrix = optimizer.mat
 
     # pretty print the matrix in a box
     click.echo("\n")

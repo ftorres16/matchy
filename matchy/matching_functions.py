@@ -14,11 +14,11 @@ METHODS = {"random": RandomSearch, "hill_climbing": HillClimbing, "random_hill":
 
 def match(n=None, m=None, method="random", initial_guess=None):
     """
-    Returns a matrix with the best possible matching for N devices,
+    Returns the optimizer you can iterate to find the best possible matching for N devices,
     where there multiplicities are given by the elements in M.
 
     Optionally, you can pass an initial guess matrix that will attempt
-    to be matched. In this case, M and N are ignored.
+    to be matched. In this case, `m` and `n` are ignored.
     """
     if initial_guess is not None:
         match_matrix = initial_guess
@@ -45,9 +45,8 @@ def match(n=None, m=None, method="random", initial_guess=None):
         match_matrix = match_matrix.reshape(L, L)
 
     matching_method = METHODS[method](match_matrix)
-    matching_method.run()
 
-    return matching_method.mat
+    return matching_method
 
 
 def report(mat):
