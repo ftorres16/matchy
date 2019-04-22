@@ -1,13 +1,18 @@
 import string
+import math
 
 import click
 import numpy as np
 
-from matchy.matching_functions import match, report, METHODS
+from matchy.helper_functions import get_report, get_device_names
+from matchy.matching_algorithms.random_search import RandomSearch
+from matchy.matching_algorithms.hill_climbing import HillClimbing
+from matchy.matching_algorithms.random_hill import RandomHill
 
 
 MAX_DEVICES = 26
 MAX_M = 30
+METHODS = {"random": RandomSearch, "hill_climbing": HillClimbing, "random_hill": RandomHill}
 
 
 @click.command()
@@ -44,25 +49,36 @@ def cli(n, m, method, initial, output):
 
     if initial:
         initial_matrix = np.genfromtxt(initial, dtype="<U1")
-        optimizer = match(method=method, initial_guess=initial_matrix)
+        names = get_device_names(initial_matrix)
     else:
         if not n:
-            n = click.prompt(
-                "Number of devices", type=click.IntRange(1, MAX_DEVICES)
-            )
+            n = click.prompt("Number of devices", type=click.IntRange(1, MAX_DEVICES))
         if len(m) != n:
-            # Multiplicities mismatch N. Enter them manually.
-            m = tuple(
-                [
-                    click.prompt(
-                        f"Multiplicity for device {string.ascii_uppercase[i]}",
-                        type=click.IntRange(1, MAX_M),
-                    )
-                    for i in range(n)
-                ]
-            )
+            # If multiplicities mismatch N. Enter them manually.
+            names = [string.ascii_uppercase[i] for i in range(n)]
+            m = [
+                click.prompt(
+                    f"Multiplicity for device {name}", type=click.IntRange(1, MAX_M)
+                )
+                for name in names
+            ]
+            m = tuple(m)
 
-        optimizer = match(n, m, method)
+        # get a list where each member is a piece of each device
+        flattened_names = [name for i, name in enumerate(names) for _ in range(m[i])]
+        # get the lenght of the square where the devices will be laid
+        L = math.ceil(math.sqrt(len(flattened_names)))
+        # add spare devices as needed
+        n_spares = L ** 2 - len(flattened_names)
+        flattened_names += ["?"] * n_spares
+
+        match_matrix = np.array(flattened_names)
+
+        # introduce some randomness to make it faster
+        np.random.shuffle(match_matrix)
+        match_matrix = match_matrix.reshape(L, L)
+
+    optimizer = METHODS[method](match_matrix)
 
     click.echo()
     with click.progressbar(optimizer._iter(), length=optimizer.max_tries) as bar:
@@ -79,7 +95,7 @@ def cli(n, m, method, initial, output):
     click.echo("└" + "─" * (2 * matched_matrix.shape[1] + 1) + "┘")
     click.echo()
 
-    matching_report = report(matched_matrix)
+    matching_report = get_report(matched_matrix)
 
     # pretty print the report as a table
     col_width = max([len(header) for header in matching_report.keys()])
@@ -91,7 +107,6 @@ def cli(n, m, method, initial, output):
         + " │"
     )
     click.echo("├─" + "─┼─".join(["─" * col_width for _ in range(num_cols)]) + "─┤")
-
     for index, name in enumerate(matching_report["names"]):
         centroid_x = f"{matching_report['centroid_x'][index]: .3}"
         centroid_y = f"{matching_report['centroid_y'][index]: .3}"
@@ -112,9 +127,8 @@ def cli(n, m, method, initial, output):
             )
             + " │"
         )
-
     click.echo("└─" + "─┴─".join(["─" * col_width for _ in range(num_cols)]) + "─┘")
-    click.echo("\n")
+    click.echo()
 
     if output is None:
         if click.confirm("Would you like to save the matrix to a .csv file?"):
