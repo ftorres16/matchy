@@ -72,12 +72,12 @@ def cli(n, m, method, initial, output):
     matched_matrix = optimizer.mat
 
     # pretty print the matrix in a box
-    click.echo("\n")
+    click.echo()
     click.echo("┌" + "─" * (2 * matched_matrix.shape[1] + 1) + "┐")
     for row in matched_matrix:
         click.echo("│ " + " ".join([dev for dev in row]) + " │")
     click.echo("└" + "─" * (2 * matched_matrix.shape[1] + 1) + "┘")
-    click.echo("\n")
+    click.echo()
 
     matching_report = report(matched_matrix)
 
