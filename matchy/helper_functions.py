@@ -40,3 +40,24 @@ def get_error(mat, centroids=None, names=None, dummy_name="?"):
         centroids = get_centroids(mat, names, dummy_name)
 
     return np.sqrt(np.sum(np.square(centroids)))
+
+
+def get_report(mat):
+    """
+    Get a report of the error and centroids of all devices in a matrix.
+    """
+    names = get_device_names(mat)
+    centroids = get_centroids(mat, names=names)
+    errors = np.sqrt(np.sum(np.square(centroids), axis=1))
+
+    # add total error to the report
+    names = np.append(names, 'total')
+    centroids = np.append(centroids, [[np.nan, np.nan]], axis=0)
+    errors = np.append(errors, np.sqrt(np.sum(np.square(errors))))
+
+    return {
+        "names": names,
+        "centroid_x": centroids[:, 0],
+        "centroid_y": centroids[:, 1],
+        "error": errors
+    }

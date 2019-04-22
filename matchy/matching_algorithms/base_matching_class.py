@@ -12,16 +12,31 @@ class BaseMatchingClass:
         self.max_tries = max_tries
 
     def run(self):
+        """
+        Performs the matching iterator until the optimal is reached or `self.max_tries` is exceeded.
+        """
+        for _ in self._iter():
+            return
+
+    def _iter(self):
+        """
+        Iterator to find the optimal matrix.
+        This function is provided for front end implementation of progress bars.
+        """
         for _ in range(self.max_tries):
             if self.error < self.tol:
-                return
+                break
 
             reached_optimal = self._optimize()
             if reached_optimal:
-                return
+                break
+            else:
+                yield
 
     def _optimize():
         """
+        Perform one iteration of the optimizer.
+
         Returns True when the optimal is reached, false if more iterations are needed.
         """
         raise NotImplementedError("Please reimplement this in your custom matching class.")
