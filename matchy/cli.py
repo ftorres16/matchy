@@ -57,9 +57,9 @@ def cli(n, m, method, initial, output):
     else:
         if not n:
             n = click.prompt("Number of devices", type=click.IntRange(1, MAX_DEVICES))
+        # If multiplicities mismatch N. Enter them manually.
+        names = [string.ascii_uppercase[i] for i in range(n)]
         if len(m) != n:
-            # If multiplicities mismatch N. Enter them manually.
-            names = [string.ascii_uppercase[i] for i in range(n)]
             m = [
                 click.prompt(
                     f"Multiplicity for device {name}", type=click.IntRange(1, MAX_M)
