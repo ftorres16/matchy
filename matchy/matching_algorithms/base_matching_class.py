@@ -10,6 +10,7 @@ class BaseMatchingClass:
 
         self.tol = tol
         self.max_tries = max_tries
+        self.reached_optimal = False
 
     def run(self):
         """
@@ -24,9 +25,10 @@ class BaseMatchingClass:
         This function is provided for front end implementation of progress bars.
         """
         for _ in range(self.max_tries):
-            if self.error < self.tol or self._optimize():
+            if self.error < self.tol or self.reached_optimal:
                 break
             else:
+                self._optimize()
                 yield
 
     def _optimize():

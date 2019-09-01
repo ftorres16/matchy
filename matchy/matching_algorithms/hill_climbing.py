@@ -11,6 +11,9 @@ class HillClimbing(BaseMatchingClass):
     """
 
     def _optimize(self):
+        if self.reached_optimal:
+            return
+
         rows, cols = self.mat.shape
 
         for x, y in np.ndindex(*self.mat.shape):
@@ -27,8 +30,9 @@ class HillClimbing(BaseMatchingClass):
 
             for swap_dir in swap_dirs:
                 if self.swap_components((x, y), swap_dir):
-                    return False
-        return True
+                    return
+
+        self.reached_optimal = True
 
     def swap_components(self, swap_point, swap_dir):
         """

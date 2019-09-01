@@ -7,4 +7,4 @@ class DoNothing(BaseMatchingClass):
     """
 
     def _optimize(self):
-        return True
+        self.reached_optimal = True
