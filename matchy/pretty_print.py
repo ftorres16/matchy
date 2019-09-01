@@ -23,6 +23,23 @@ def pretty_print_matrix(mat):
 
 
 def pretty_print_table(headers, rows):
+    """
+    Pretty print a table with headers and its rows.
+
+    `headers` should be a list of strings.
+    `rows` should be a list of lists of strings each one with the same len as `headers`.
+
+    For example, if `headers = ['col1', 'col2']` and `rows = [['row1', 'val1'], ['row2', 'val2']]`
+
+    Then the output will print:
+        ┌──────┬──────┐
+        │ col1 │ col2 │
+        ├──────┼──────┤
+        │ row1 │ val1 │
+        ├┈┈─┈┈┈┼┈┈┈┈┈┈┤
+        │ row2 │ val2 │
+        └──────┴──────┘
+    """
     col_width = len(max(headers, key=len))
     num_cols = len(headers)
 
