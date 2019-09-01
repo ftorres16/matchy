@@ -16,7 +16,7 @@ class HillClimbing(BaseMatchingClass):
 
         rows, cols = self.mat.shape
 
-        for x, y in np.ndindex(*self.mat.shape):
+        for y, x in np.ndindex(*self.mat.shape):
             # get all the directions in which the target component will be swapped
             swap_dirs = []
             if x != cols - 1:

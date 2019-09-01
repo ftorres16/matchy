@@ -70,17 +70,41 @@ def cli(n, m, method, initial, output):
 
         # get a list where each member is a piece of each device
         flattened_names = [name for i, name in enumerate(names) for _ in range(m[i])]
-        # get the lenght of the square where the devices will be laid
-        L = int(np.ceil(np.sqrt(len(flattened_names))))
+        num_devices = len(flattened_names)
+
+        if click.confirm(
+            "Would you like to manually enter matrix dimensions? (defaults to square)"
+        ):
+            mat_height = click.prompt(
+                "Matrix height", type=click.IntRange(1, num_devices)
+            )
+            mat_width = click.prompt(
+                "Matrix width", type=click.IntRange(1, num_devices)
+            )
+            while mat_height * mat_width < num_devices:
+                click.echo(
+                    "Dimensions entered are too small. Please enter valid matrix dimensions"
+                )
+                mat_height = click.prompt(
+                    "Matrix height", type=click.IntRange(1, num_devices)
+                )
+                mat_width = click.prompt(
+                    "Matrix width", type=click.IntRange(1, num_devices)
+                )
+        else:
+            # defaults to a square
+            mat_height = int(np.ceil(np.sqrt(num_devices)))
+            mat_width = int(np.ceil(np.sqrt(num_devices)))
+
         # add spare devices as needed
-        n_spares = L ** 2 - len(flattened_names)
+        n_spares = mat_height * mat_width - num_devices
         flattened_names += ["?"] * n_spares
 
         match_matrix = np.array(flattened_names)
 
         # introduce some randomness to make it faster
         np.random.shuffle(match_matrix)
-        match_matrix = match_matrix.reshape(L, L)
+        match_matrix = match_matrix.reshape(mat_height, mat_width)
 
     optimizer = METHODS[method](match_matrix)
 
