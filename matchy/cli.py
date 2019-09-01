@@ -1,5 +1,4 @@
 import string
-import math
 
 import click
 import numpy as np
@@ -72,7 +71,7 @@ def cli(n, m, method, initial, output):
         # get a list where each member is a piece of each device
         flattened_names = [name for i, name in enumerate(names) for _ in range(m[i])]
         # get the lenght of the square where the devices will be laid
-        L = math.ceil(math.sqrt(len(flattened_names)))
+        L = int(np.ceil(np.sqrt(len(flattened_names))))
         # add spare devices as needed
         n_spares = L ** 2 - len(flattened_names)
         flattened_names += ["?"] * n_spares
