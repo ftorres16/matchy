@@ -24,11 +24,7 @@ class BaseMatchingClass:
         This function is provided for front end implementation of progress bars.
         """
         for _ in range(self.max_tries):
-            if self.error < self.tol:
-                break
-
-            reached_optimal = self._optimize()
-            if reached_optimal:
+            if self.error < self.tol or self._optimize():
                 break
             else:
                 yield
