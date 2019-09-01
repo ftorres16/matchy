@@ -82,18 +82,21 @@ def cli(n, m, method, mat_height, mat_width, initial, output):
         flattened_names = [name for i, name in enumerate(names) for _ in range(m[i])]
         num_devices = len(flattened_names)
 
-        mat_height = mat_height or 1
-        mat_width = mat_width or 1
+        mat_height = mat_height or 0
+        mat_width = mat_width or 0
 
+        click.echo("")
         if mat_height * mat_width >= num_devices:
             pass
         elif click.confirm(
             "Would you like to manually enter matrix dimensions? (defaults to square)"
         ):
             while mat_height * mat_width < num_devices:
-                click.echo(
-                    "Dimensions entered are too small. Please enter valid matrix dimensions"
-                )
+                if mat_height * mat_width != 0:
+                    # this means that height and width were given by the user at least once
+                    click.echo(
+                        "Dimensions entered are too small. Please enter valid matrix dimensions"
+                    )
                 mat_height = click.prompt(
                     "Matrix height", type=click.IntRange(1, num_devices)
                 )
