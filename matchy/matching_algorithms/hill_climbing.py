@@ -56,6 +56,10 @@ class HillClimbing(BaseMatchingClass):
         x, y = swap_point
         swap_x, swap_y = swap_dir
 
+        if self.mat[y, x] == self.mat[y + swap_y, x + swap_x]:
+            # no point in swapping identical devices
+            return False
+
         self.mat[(y, y + swap_y), (x, x + swap_x)] = self.mat[
             (y + swap_y, y), (x + swap_x, x)
         ]
