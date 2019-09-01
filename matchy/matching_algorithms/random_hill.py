@@ -21,19 +21,19 @@ class RandomHill(BaseMatchingClass):
             random_matrixes[index] = flat_mat.reshape(mat.shape)
 
         self.candidates = [
-            {"optimizer": HillClimbing(random_mat), "reached_optimal": False}
+            HillClimbing(random_mat)
             for random_mat in np.unique(random_matrixes, axis=0)
         ]
 
     def _optimize(self):
         for candidate in self.candidates:
-            if not candidate["reached_optimal"]:
-                candidate["reached_optimal"] = candidate["optimizer"]._optimize()
+            if not candidate.reached_optimal:
+                candidate._optimize()
 
-                if candidate["optimizer"].error < self.error:
-                    self.mat = candidate["optimizer"].mat
-                    self.error = candidate["optimizer"].error
+                if candidate.error < self.error:
+                    self.mat = candidate.mat
+                    self.error = candidate.error
 
-                return False
+                return
 
-        return True
+        self.reached_optimal = True
