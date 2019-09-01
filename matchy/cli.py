@@ -8,6 +8,7 @@ from matchy.helper_functions import get_report, get_device_names
 from matchy.matching_algorithms.random_search import RandomSearch
 from matchy.matching_algorithms.hill_climbing import HillClimbing
 from matchy.matching_algorithms.random_hill import RandomHill
+from matchy.pretty_print import pretty_print_matrix, pretty_print_table
 
 
 MAX_DEVICES = 26
@@ -94,42 +95,23 @@ def cli(n, m, method, initial, output):
 
     # pretty print the matrix in a box
     click.echo()
-    box_top = "─" * (2 * matched_matrix.shape[1] + 1)
-    click.echo(f"┌{box_top}┐")
-    for row in matched_matrix:
-        devices = " ".join(row)
-        click.echo(f"│ {devices} │")
-    click.echo(f"└{box_top}┘")
+    pretty_print_matrix(matched_matrix)
     click.echo()
 
     matching_report = get_report(matched_matrix)
 
     # pretty print the report as a table
-    col_width = max([len(header) for header in matching_report.keys()])
-    num_cols = len(matching_report.keys())
-    box_top = "─┬─".join(["─" * col_width for _ in range(num_cols)])
-    headers = " │ ".join(
-        [f"{header:>{col_width}}" for header in matching_report.keys()]
-    )
-    separator = "─┼─".join(["─" * col_width for _ in range(num_cols)])
-    row_separator = "┈┼┈".join(["┈" * col_width for _ in range(num_cols)])
-    box_bot = "─┴─".join(["─" * col_width for _ in range(num_cols)])
-    click.echo(f"┌─{box_top}─┐")
-    click.echo(f"│ {headers} │")
-    click.echo(f"├─{separator}─┤")
-    for index, name in enumerate(matching_report["names"]):
-        centroid_x = f"{matching_report['centroid_x'][index]: .3}"
-        centroid_y = f"{matching_report['centroid_y'][index]: .3}"
-        error = f"{matching_report['error'][index]: .3}"
-
-        if index > 0:
-            click.echo(f"├┈{row_separator}┈┤")
-
-        row = " │ ".join(
-            [f"{value:>{col_width}}" for value in (name, centroid_x, centroid_y, error)]
-        )
-        click.echo(f"│ {row} │")
-    click.echo(f"└─{box_bot}─┘")
+    headers = matching_report.keys()
+    rows = [
+        [
+            name,
+            f"{matching_report['centroid_x'][index]: .3}",
+            f"{matching_report['centroid_y'][index]: .3}",
+            f"{matching_report['error'][index]: .3}",
+        ]
+        for index, name in enumerate(matching_report["names"])
+    ]
+    pretty_print_table(headers, rows)
     click.echo()
 
     if output is None:
