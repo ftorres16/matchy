@@ -32,6 +32,16 @@ METHODS = {
     help="Multiplicity of each device.",
 )
 @click.option(
+    "--mat_height",
+    type=click.IntRange(1, MAX_DEVICES * MAX_M),
+    help="Height for the final matching matrix",
+)
+@click.option(
+    "--mat_width",
+    type=click.IntRange(1, MAX_DEVICES * MAX_M),
+    help="Width for the final matching matrix",
+)
+@click.option(
     "--method",
     help="Method to find the optimal matrix.",
     type=click.Choice(METHODS.keys()),
@@ -41,7 +51,7 @@ METHODS = {
     "--initial", help="File to load the initial matrix guess.", type=click.Path()
 )
 @click.option("--output", help="File to save the resulting matrix.", type=click.Path())
-def cli(n, m, method, initial, output):
+def cli(n, m, method, mat_height, mat_width, initial, output):
     """
     Matching for IC devices.
 
@@ -72,15 +82,14 @@ def cli(n, m, method, initial, output):
         flattened_names = [name for i, name in enumerate(names) for _ in range(m[i])]
         num_devices = len(flattened_names)
 
-        if click.confirm(
+        mat_height = mat_height or 1
+        mat_width = mat_width or 1
+
+        if mat_height * mat_width >= num_devices:
+            pass
+        elif click.confirm(
             "Would you like to manually enter matrix dimensions? (defaults to square)"
         ):
-            mat_height = click.prompt(
-                "Matrix height", type=click.IntRange(1, num_devices)
-            )
-            mat_width = click.prompt(
-                "Matrix width", type=click.IntRange(1, num_devices)
-            )
             while mat_height * mat_width < num_devices:
                 click.echo(
                     "Dimensions entered are too small. Please enter valid matrix dimensions"
