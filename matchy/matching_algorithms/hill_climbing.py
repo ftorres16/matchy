@@ -1,3 +1,5 @@
+import numpy as np
+
 from matchy.helper_functions import get_error
 from matchy.matching_algorithms.base_matching_class import BaseMatchingClass
 
@@ -9,25 +11,28 @@ class HillClimbing(BaseMatchingClass):
     """
 
     def _optimize(self):
+        if self.reached_optimal:
+            return
+
         rows, cols = self.mat.shape
 
-        for x in range(cols):
-            for y in range(rows):
-                # get all the directions in which the target component will be swapped
-                swap_dirs = []
-                if x != cols - 1:
-                    swap_dirs.append((1, 0))
-                if y != rows - 1:
-                    swap_dirs.append((0, 1))
-                if x != cols - 1 and y != rows - 1:
-                    swap_dirs.append((1, 1))
-                if x != 0 and y != rows - 1:
-                    swap_dirs.append((-1, 1))
+        for y, x in np.ndindex(*self.mat.shape):
+            # get all the directions in which the target component will be swapped
+            swap_dirs = []
+            if x != cols - 1:
+                swap_dirs.append((1, 0))
+            if y != rows - 1:
+                swap_dirs.append((0, 1))
+            if x != cols - 1 and y != rows - 1:
+                swap_dirs.append((1, 1))
+            if x != 0 and y != rows - 1:
+                swap_dirs.append((-1, 1))
 
-                for swap_dir in swap_dirs:
-                    if self.swap_components((x, y), swap_dir):
-                        return False
-        return True
+            for swap_dir in swap_dirs:
+                if self.swap_components((x, y), swap_dir):
+                    return
+
+        self.reached_optimal = True
 
     def swap_components(self, swap_point, swap_dir):
         """
@@ -48,10 +53,12 @@ class HillClimbing(BaseMatchingClass):
                 [['A', 'B'],
                  ['A', 'B']]
         """
-        x = swap_point[0]
-        y = swap_point[1]
-        swap_x = swap_dir[0]
-        swap_y = swap_dir[1]
+        x, y = swap_point
+        swap_x, swap_y = swap_dir
+
+        if self.mat[y, x] == self.mat[y + swap_y, x + swap_x]:
+            # no point in swapping identical devices
+            return False
 
         self.mat[(y, y + swap_y), (x, x + swap_x)] = self.mat[
             (y + swap_y, y), (x + swap_x, x)
@@ -62,9 +69,9 @@ class HillClimbing(BaseMatchingClass):
         if new_error < self.error:
             self.error = new_error
             return True
-
-        # undo the swap
-        self.mat[(y, y + swap_y), (x, x + swap_x)] = self.mat[
-            (y + swap_y, y), (x + swap_x, x)
-        ]
-        return False
+        else:
+            # undo the swap
+            self.mat[(y, y + swap_y), (x, x + swap_x)] = self.mat[
+                (y + swap_y, y), (x + swap_x, x)
+            ]
+            return False

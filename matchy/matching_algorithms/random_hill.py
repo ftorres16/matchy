@@ -12,27 +12,28 @@ class RandomHill(BaseMatchingClass):
     def __init__(self, mat, num_matrixes=100, *args, **kwargs):
         super().__init__(mat, *args, **kwargs)
 
-        random_matrixes = []
-        for _ in range(num_matrixes):
+        random_matrixes = np.empty(shape=(num_matrixes, *mat.shape), dtype=mat.dtype)
+
+        for index in range(num_matrixes):
             random_mat = np.copy(mat)
             flat_mat = random_mat.ravel()
             np.random.shuffle(flat_mat)
-            random_matrixes.append(flat_mat.reshape(mat.shape))
+            random_matrixes[index] = flat_mat.reshape(mat.shape)
 
         self.candidates = [
-            {"optimizer": HillClimbing(random_mat), "reached_optimal": False}
-            for random_mat in random_matrixes
+            HillClimbing(random_mat)
+            for random_mat in np.unique(random_matrixes, axis=0)
         ]
 
     def _optimize(self):
         for candidate in self.candidates:
-            if not candidate["reached_optimal"]:
-                candidate["reached_optimal"] = candidate["optimizer"]._optimize()
+            if not candidate.reached_optimal:
+                candidate._optimize()
 
-                if candidate["optimizer"].error < self.error:
-                    self.mat = candidate["optimizer"].mat
-                    self.error = candidate["optimizer"].error
+                if candidate.error < self.error:
+                    self.mat = candidate.mat
+                    self.error = candidate.error
 
-                return False
+                return
 
-        return True
+        self.reached_optimal = True
