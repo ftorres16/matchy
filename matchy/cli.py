@@ -8,6 +8,7 @@ from matchy.helper_functions import get_report, get_device_names
 from matchy.matching_algorithms.random_search import RandomSearch
 from matchy.matching_algorithms.hill_climbing import HillClimbing
 from matchy.matching_algorithms.random_hill import RandomHill
+from matchy.matching_algorithms.do_nothing import DoNothing
 
 
 MAX_DEVICES = 26
@@ -16,6 +17,7 @@ METHODS = {
     "random": RandomSearch,
     "hill_climbing": HillClimbing,
     "random_hill": RandomHill,
+    "do_nothing": DoNothing,
 }
 
 
