@@ -64,8 +64,8 @@ def cli(n, m, method, mat_height, mat_width, initial, output):
     """
 
     if initial:
-        initial_matrix = np.genfromtxt(initial, dtype="<U1")
-        names = get_device_names(initial_matrix)
+        match_matrix = np.genfromtxt(initial, dtype="<U1")
+        names = get_device_names(match_matrix)
     else:
         if not n:
             n = click.prompt("Number of devices", type=click.IntRange(1, MAX_DEVICES))
