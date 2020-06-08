@@ -64,7 +64,7 @@ def cli(n, m, method, mat_height, mat_width, initial, output):
     """
 
     if initial:
-        match_matrix = np.genfromtxt(initial, dtype="<U1")
+        match_matrix = np.genfromtxt(initial, dtype="<U1", delimiter=",")
         names = get_device_names(match_matrix)
     else:
         if not n:
@@ -158,4 +158,4 @@ def cli(n, m, method, mat_height, mat_width, initial, output):
             )
 
     if output is not None:
-        np.savetxt(output, matched_matrix, fmt="%s")
+        np.savetxt(output, matched_matrix, fmt="%s", delimiter=",")
