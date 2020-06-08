@@ -6,7 +6,7 @@ A tool for matching devices in analog layout in a streamlined and automated way.
 
 1. Git clone this repository.
 2. `cd` to the root folder where this repo is cloned.
-3. `pip install .`
+3. `pip install -e .`
 
 ## Usage
 
