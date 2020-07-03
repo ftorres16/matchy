@@ -4,9 +4,13 @@ A tool for matching devices in analog layout in a streamlined and automated way.
 
 ## Installation
 
-1. Git clone this repository.
+Run `pip install matchy` for the latest stable version.
+
+### Development
+
+1. Git clone [this repository](https://github.com/ftorres16/matchy/).
 2. `cd` to the root folder where this repo is cloned.
-3. `pip install -e .`
+3. `poetry install` to install it with [Python Poetry](https://python-poetry.org/).
 
 ## Usage
 
