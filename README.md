@@ -19,3 +19,9 @@ Run `pip install matchy` for the latest stable version.
 3. The CLI will ask you for the multiplicity of each device.
 4. Sit back and wait for the optimization to occur.
 5. You will be prompted with the system's best guess for the optimal matrix, as well as some key metrics, such as the centroid of each device and total error.
+
+You may want to use `matchy` only to calculate the centroid of your devices. In that case:
+
+1. Save your device matrix configuration in a CSV file.
+2. Run `matchy --initial <PATH> --method do_nothing`
+3. Matchy will print the centroid for each device in a table.
