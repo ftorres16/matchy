@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "matchy"
+version = "0.1.0"
+description = "A tool for matching analog IC layout designs."
+authors = ["Fabian Torres"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/ftorres16/matchy"
+
+[tool.poetry.scripts]
+matchy = 'matchy.cli:cli'
+
+[tool.poetry.dependencies]
+python = "^3.8"
+numpy = "^1.19.0"
+click = "^7.1.2"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+flake8 = "^3.8.3"
+black = "^19.10b0"
+ipython = "^7.16.1"
+ipdb = "^0.13.3"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
