@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "matchy"
-version = "0.1.0"
+version = "0.1.1"
 description = "A tool for matching analog IC layout designs."
 authors = ["Fabian Torres"]
 license = "MIT"
@@ -12,8 +12,8 @@ matchy = 'matchy.cli:cli'
 
 [tool.poetry.dependencies]
 python = "^3.8"
-numpy = "^1.19.0"
-click = "^7.1.2"
+numpy = "^1.23.2"
+click = "^8.1.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
