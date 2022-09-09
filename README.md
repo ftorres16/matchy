@@ -2,6 +2,8 @@
 
 A tool for matching devices in analog layout in a streamlined and automated way.
 
+For an online demo of matchy, check out [this link](https://ftorres16-matchy-web-matchy-webmain-2l2o5w.streamlitapp.com/).
+
 ## Installation
 
 Run `pip install matchy` for the latest stable version.
