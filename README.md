@@ -2,7 +2,7 @@
 
 A tool for matching devices in analog layout in a streamlined and automated way.
 
-For an online demo of matchy, check out [this link](https://ftorres16-matchy-web-matchy-webmain-nnw2ql.streamlitapp.com/).
+For an online demo of matchy, check out [this link](https://ftorres16-matchy-web-matchy-webhome-w06rwp.streamlitapp.com/).
 
 ## Installation
 
